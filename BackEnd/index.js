@@ -9,7 +9,7 @@ const port = 5000;
 app.use(express.json());//middleware
 
 app.get("/", (req, res) => {
-  res.send("Hello ADARSH");
+  res.send("Hello ADARSH this is backend");
 });
 
 app.use("/api/auth", require("./routes/auth"));

@@ -1,10 +1,13 @@
 import React from "react";
 
 function About() {
-    return (
+
+  return (
     <div>
-      <div>this is about</div>
-          </div>
+      <div>
+        This is about inotebook
+      </div>
+    </div>
   );
 }
 

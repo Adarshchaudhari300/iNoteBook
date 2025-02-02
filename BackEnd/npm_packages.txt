@@ -1,5 +1,6 @@
 npm init                     
 npm i express
+npm install cors
 npm i mongoose               
 npm i -D nodemon   
 nodemon .\index.js     

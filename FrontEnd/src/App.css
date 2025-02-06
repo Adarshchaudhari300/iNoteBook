@@ -1,0 +1,20 @@
+/* For WebKit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+    width: 6px; /* Adjust width */
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #ffffff; /* Track color */
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #d30202; /* Scrollbar color */
+    border-radius: 5px; /* Rounded corners */
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a73838; /* Darker color on hover */
+  }

@@ -17,7 +17,7 @@ const NoteState = (props) => {
       },
     });
     const json1 = await response.json();
-    console.log(json1);
+    // console.log(json1);
 
     //code for setting all notes
     setNotes(json1);
@@ -35,7 +35,7 @@ const NoteState = (props) => {
       body: JSON.stringify({ title, description, tag }),
     });
     const json1 =await response.json();
-    console.log(json1);
+    // console.log(json1);
 
     //code for adding
     // const note = {
@@ -63,8 +63,8 @@ const NoteState = (props) => {
         "auth-token":localStorage.getItem("authtoken"),
       },
     });
-    const json =await response.json();
-    console.log(json);
+    // const json =await response.json();
+    // console.log(json);
 
     //filters the entire notes array and removes the note with _id==id
     const newNotes = notes.filter((note) => {
@@ -84,8 +84,8 @@ const NoteState = (props) => {
       },
       body: JSON.stringify({ title, description, tag }),
     });
-    const json = response.json();
-    console.log(json);
+    // const json =await response.json();
+    // console.log(json);
 
     let newNotes = JSON.parse(JSON.stringify(notes));
     //edit note content code

@@ -22,7 +22,7 @@ const Login = (props) => {
     });
 
     const json1 = await response.json();
-    console.log(json1);
+    // console.log(json1);
 
     if (json1.success) {
       localStorage.setItem("authtoken", json1.jwt_token);

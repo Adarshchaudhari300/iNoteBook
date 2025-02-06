@@ -3,6 +3,7 @@ import noteContext from "../context/notes/noteContext";
 import Noteitem from "./Noteitem";
 import Addnote from "./Addnote";
 import { useNavigate } from "react-router-dom";
+import "./Notes.css";
 
 function Notes(props) {
   let navigate = useNavigate();
@@ -27,6 +28,7 @@ function Notes(props) {
 
   const ref = useRef(null);
   const refClose = useRef(null);
+  const refOpen = useRef(null);
 
   const updateNote = (currentNote) => {
     ref.current.click();
@@ -35,6 +37,20 @@ function Notes(props) {
       etitle: currentNote.title,
       edescription: currentNote.description,
       etag: currentNote.tag,
+    });
+  };
+
+  const [modal, setmodal] = useState({
+    btitle: "",
+    bdescription: "",
+    btag: "",
+  });
+  const openText = (currentNote) => {
+    refOpen.current.click();
+    setmodal({
+      btitle: currentNote.title,
+      bdescription: currentNote.description,
+      btag: currentNote.tag,
     });
   };
 
@@ -61,14 +77,14 @@ function Notes(props) {
         type="button"
         className="btn btn-primary d-none"
         data-bs-toggle="modal"
-        data-bs-target="#exampleModal"
+        data-bs-target="#exampleModal1"
       >
         Launch demo modal
       </button>
 
       <div
         className="modal fade"
-        id="exampleModal"
+        id="exampleModal1"
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
@@ -151,11 +167,62 @@ function Notes(props) {
         </div>
       </div>
 
+      {/* Modal For displaying the text note in modal */}
+      {/* ------------------------------------------------------------------------------ */}
+      <div>
+        <button
+          ref={refOpen}
+          type="button"
+          className="btn btn-primary d-none"
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+        >
+          Launch demo modal
+        </button>
+
+        <div
+          className="modal fade"
+          id="exampleModal"
+          tabIndex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-dialog-scrollable">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="exampleModalLabel">
+                  <strong>Title : </strong> {modal.btitle}
+                </h1>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div id="tagidscroll" className="modal-body fs-5">
+                <strong className="fs-5">Tag :</strong> {modal.btag}
+              </div>
+              <div className="modal-body ">
+                {" "}
+                <strong  className="fs-5">Description : </strong>{" "}
+                {modal.bdescription}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* ------------------------------------------------------------------------ */}
+
       {/* here is where you display all notes */}
-      <h2>
-        Your <strong style={{ color: "red" }}>Note</strong>
+      <h2 style={{ marginLeft: "22px" }}>
+        <strong style={{ color: "red" }}>All</strong> Notes
       </h2>
-      <div className="row shadow-lg p-3 mb-5 bg-white rounded">
+      <div
+        id="scrollbarsetting"
+        className="row shadow-lg mt-4 p-3 mb-5 bg-white rounded"
+        style={{ height: "64vh" }}
+      >
         {notes.map((note) => {
           return (
             <Noteitem
@@ -163,6 +230,7 @@ function Notes(props) {
               note={note}
               showAlert={props.showAlert}
               updateNote={updateNote}
+              openText={openText}
             />
           );
         })}

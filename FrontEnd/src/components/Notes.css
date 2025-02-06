@@ -1,0 +1,8 @@
+#scrollbarsetting {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+#tagidscroll {
+  overflow-y: hidden;
+}
+

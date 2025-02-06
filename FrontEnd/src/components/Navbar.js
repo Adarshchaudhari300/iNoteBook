@@ -56,7 +56,7 @@ function Navbar(props) {
                 }`}
                 to="/about"
               >
-                about
+                About
               </Link>
             </li>
           </ul>

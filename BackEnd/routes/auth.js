@@ -20,6 +20,7 @@ router.post(
   ],
 
   async (req, res) => {
+    let success = false;
     //if there are errors return bad request and the errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -34,7 +35,9 @@ router.post(
       const email = req.body.email;
       let user = await User.findOne({ email });
       if (user) {
-        return res.status(400).json({ error: "this email already exist" });
+        return res
+          .status(400)
+          .json({ success, error: "this email already exist" });
       }
 
       const salt = await bcrypt.genSalt(10);
@@ -54,9 +57,9 @@ router.post(
       };
       const jwt_token = jwt.sign(data, jwt_secret);
       // console.log(jwt_token);
-
+      success = true;
       //this sends files to mongo db
-      res.json({ jwt_token });
+      res.json({ success, jwt_token });
     } catch (error) {
       console.error(error.message);
       res.status(500).send("Some Code error in Route 1 of auth.js");

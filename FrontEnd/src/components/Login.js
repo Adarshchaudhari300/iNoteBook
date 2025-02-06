@@ -1,7 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = (props) => {
+  //set state of credentails
   const [credentials, setCredentials] = useState({ email: "", password: "" });
+
+  //set navigation to navigate on click on submit
+  let navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,8 +20,18 @@ const Login = () => {
         password: credentials.password,
       }),
     });
+
     const json1 = await response.json();
     console.log(json1);
+
+    if (json1.success) {
+      localStorage.setItem("authtoken", json1.jwt_token);
+      navigate("/");
+      props.showAlert("Logged in Successfully","success")
+    } else {
+      props.showAlert("Enter Correct credentials","danger")
+      // alert("Credentials are wrong");
+    }
   };
 
   const onChange1 = (e) => {
@@ -40,7 +55,7 @@ const Login = () => {
             aria-describedby="emailHelp"
             value={credentials.email}
             onChange={onChange1}
-            />
+          />
         </div>
         <div className="mb-3">
           <label htmlFor="password" className="form-label">

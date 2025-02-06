@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import noteContext from "../context/notes/noteContext";
 
-const Addnote = () => {
+const Addnote = (props) => {
   //initalization of context api
   const NoteContext = useContext(noteContext);
   //destructring just like done in props
@@ -19,6 +19,7 @@ const Addnote = () => {
     //pushes data back to NoteSate
     addNote(note.title, note.description, note.tag);
     setnote({ title: "", description: "", tag: "" });
+    props.showAlert("Note Added Successfully","success")
   };
 
   const onChange1 = (e) => {

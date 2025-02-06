@@ -26,10 +26,10 @@ const Login = (props) => {
 
     if (json1.success) {
       localStorage.setItem("authtoken", json1.jwt_token);
+      props.showAlert("Logged in Successfully", "success");
       navigate("/");
-      props.showAlert("Logged in Successfully","success")
     } else {
-      props.showAlert("Enter Correct credentials","danger")
+      props.showAlert("Enter Correct credentials", "danger");
       // alert("Credentials are wrong");
     }
   };
@@ -41,11 +41,11 @@ const Login = (props) => {
 
   return (
     <div>
-      <h1>Log-In</h1>
+      <h1 className="mt-5 mb-3">Log-In</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">
-            Email address
+            <strong>Email address</strong>
           </label>
           <input
             type="email"
@@ -59,7 +59,7 @@ const Login = (props) => {
         </div>
         <div className="mb-3">
           <label htmlFor="password" className="form-label">
-            Password
+            <strong>Password</strong>
           </label>
           <input
             type="password"

@@ -45,11 +45,11 @@ const SignUp = (props) => {
   return (
     <div>
       {" "}
-      <h1>Sign-Up</h1>
+      <h1 className="mt-5 mb-3">Sign-Up</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="name" className="form-label">
-            Name
+            <strong>Name</strong>
           </label>
           <input
             type="text"
@@ -62,7 +62,7 @@ const SignUp = (props) => {
         </div>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">
-            Email address
+            <strong>Email address</strong>
           </label>
           <input
             type="email"
@@ -76,7 +76,7 @@ const SignUp = (props) => {
         </div>
         <div className="mb-3">
           <label htmlFor="password" className="form-label">
-            Password
+            <strong>Password</strong>
           </label>
           <input
             type="password"
@@ -91,7 +91,7 @@ const SignUp = (props) => {
         </div>
         <div className="mb-3">
           <label htmlFor="password" className="form-label">
-            Confirm-Password
+            <strong>Confirm-Password</strong>
           </label>
           <input
             type="password"

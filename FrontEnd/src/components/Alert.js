@@ -15,7 +15,7 @@ export default function Alert(props) {
   return (
     props.alert && (
       <div
-        className={`fixed-top alert alert-${props.alert.type} alert-dismissible fade show`}
+        className={`fixed-bottom alert alert-${props.alert.type} alert-dismissible fade show`}
         role="alert"
       >
         <strong>{capitalize(word)}</strong> : {props.alert.msg}

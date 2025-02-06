@@ -2,8 +2,10 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import noteContext from "../context/notes/noteContext";
 import Noteitem from "./Noteitem";
 import Addnote from "./Addnote";
+import { useNavigate } from "react-router-dom";
 
 function Notes(props) {
+  let navigate = useNavigate();
   const NoteContext = useContext(noteContext);
   let { notes, getNotes, editNote } = NoteContext;
 
@@ -15,8 +17,12 @@ function Notes(props) {
   });
 
   useEffect(() => {
-    getNotes();
-    // eslint-disable-next-line
+    if (localStorage.getItem("authtoken")) {
+      getNotes();
+      // eslint-disable-next-line
+    } else {
+      navigate("/login");
+    }
   }, []);
 
   const ref = useRef(null);
@@ -38,7 +44,7 @@ function Notes(props) {
     refClose.current.click();
     // console.log("updating note : " + note);
     editNote(note.id, note.etitle, note.edescription, note.etag);
-    props.showAlert("Note Updated Successfully","success")
+    props.showAlert("Note Updated Successfully", "success");
   };
 
   const onChange1 = (e) => {
@@ -46,10 +52,9 @@ function Notes(props) {
     setnote({ ...note, [e.target.name]: e.target.value });
   };
 
-
   return (
     <div className="container">
-      <Addnote showAlert={props.showAlert}/>
+      <Addnote showAlert={props.showAlert} />
 
       <button
         ref={ref}
@@ -72,7 +77,7 @@ function Notes(props) {
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="exampleModalLabel">
-               <strong>Edit Note</strong>
+                <strong>Edit Note</strong>
               </h1>
               <button
                 type="button"
@@ -84,7 +89,10 @@ function Notes(props) {
             <div className="modal-body">
               <form>
                 <div className="form-group my-2">
-                  <label htmlFor="title"> <strong>Title</strong></label>
+                  <label htmlFor="title">
+                    {" "}
+                    <strong>Title</strong>
+                  </label>
                   <input
                     type="text"
                     className="form-control"
@@ -95,7 +103,9 @@ function Notes(props) {
                   />
                 </div>
                 <div className="form-group my-2">
-                  <label htmlFor="description"><strong>Description</strong></label>
+                  <label htmlFor="description">
+                    <strong>Description</strong>
+                  </label>
                   <input
                     type="text"
                     className="form-control"
@@ -106,7 +116,9 @@ function Notes(props) {
                   />
                 </div>
                 <div className="form-group my-2">
-                  <label htmlFor="tag"><strong>Tag</strong></label>
+                  <label htmlFor="tag">
+                    <strong>Tag</strong>
+                  </label>
                   <input
                     type="text"
                     className="form-control"
@@ -128,7 +140,6 @@ function Notes(props) {
                 Close
               </button>
               <button
-                
                 onClick={handleClick}
                 type="button"
                 className="btn btn-primary"
@@ -140,12 +151,19 @@ function Notes(props) {
         </div>
       </div>
 
-       {/* here is where you display all notes */}
-      <h2>Your  <strong style={{color:"red"}}>Note</strong></h2>
+      {/* here is where you display all notes */}
+      <h2>
+        Your <strong style={{ color: "red" }}>Note</strong>
+      </h2>
       <div className="row shadow-lg p-3 mb-5 bg-white rounded">
         {notes.map((note) => {
           return (
-            <Noteitem key={note._id} note={note} showAlert={props.showAlert} updateNote={updateNote} />
+            <Noteitem
+              key={note._id}
+              note={note}
+              showAlert={props.showAlert}
+              updateNote={updateNote}
+            />
           );
         })}
       </div>

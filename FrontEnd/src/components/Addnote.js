@@ -10,7 +10,7 @@ const Addnote = () => {
   const [note, setnote] = useState({
     title: "",
     description: "",
-    tag: "default",
+    tag: "",
   });
 
   const handleClick = (e2) => {
@@ -18,6 +18,7 @@ const Addnote = () => {
     e2.preventDefault();
     //pushes data back to NoteSate
     addNote(note.title, note.description, note.tag);
+    setnote({ title: "", description: "", tag: "" });
   };
 
   const onChange1 = (e) => {
@@ -27,11 +28,11 @@ const Addnote = () => {
 
   return (
     <div>
-      <div className="container my-3">
+      <div className="container my-3 ">
         <h2>
           Add your <strong style={{ color: "red" }}>Note</strong>
         </h2>
-        <form>
+        <form className="shadow-lg p-3 mb-5 bg-white rounded">
           <div className="form-group my-2">
             <label htmlFor="title">Title</label>
             <input
@@ -40,17 +41,22 @@ const Addnote = () => {
               id="title"
               onChange={onChange1}
               name="title"
-            />
+              placeholder="Minimun 3 Letters required"
+              value={note.title}
+              />
           </div>
           <div className="form-group my-2">
             <label htmlFor="description">Description</label>
-            <input
+            <textarea
               type="text"
-              className="form-control"
+              className="form-control "
               id="description"
+              rows="3"
               onChange={onChange1}
               name="description"
-            />
+              placeholder="Minimun 5 Letters required"
+              value={note.description}
+              ></textarea>
           </div>
           <div className="form-group my-2">
             <label htmlFor="tag">Tag</label>
@@ -60,9 +66,12 @@ const Addnote = () => {
               id="tag"
               onChange={onChange1}
               name="tag"
-            />
+              placeholder="Default-tag"
+              value={note.tag}
+              />
           </div>
           <button
+            disabled={note.title.length < 3 || note.description.length < 5}
             type="submit"
             className="btn btn-success my-2"
             onClick={handleClick}

@@ -57,8 +57,7 @@ router.post(
 
       //this sends files to mongo db
       res.json({ jwt_token });
-
-      } catch (error) {
+    } catch (error) {
       console.error(error.message);
       res.status(500).send("Some Code error in Route 1 of auth.js");
     }
@@ -77,6 +76,7 @@ router.post(
   ],
 
   async (req, res) => {
+    let success = false;
     //if there are errors return bad request and the errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -90,13 +90,13 @@ router.post(
       //get email form db and compare it with body email
       let user = await User.findOne({ email });
       if (!user) {
-        return res.status(400).json({ error: "Enter correct mail" });
+        return res.status(400).json({ success, error: "Enter correct mail" });
       }
 
       //get password from db and comapre its hash to body password
       const comppass = await bcrypt.compare(password, user.password);
       if (!comppass) {
-        return res.status(400).json({ error: "wrong password" });
+        return res.status(400).json({ success, error: "wrong password" });
       }
 
       //token is created
@@ -109,7 +109,8 @@ router.post(
       const jwt_token = jwt.sign(data, jwt_secret);
       // console.log(jwt_token);
       //this sends files to mongo db
-      res.json({ jwt_token });
+      success = true;
+      res.json({ success, jwt_token });
     } catch (error) {
       console.error(error.message);
       res.status(500).send("Some Code error in Route 2 of auth.js ");

@@ -5,39 +5,47 @@ import Addnote from "./Addnote";
 
 function Notes() {
   const NoteContext = useContext(noteContext);
-  let { notes, getNotes} = NoteContext;
+  let { notes, getNotes, editNote } = NoteContext;
+
+  const [note, setnote] = useState({
+    id: "",
+    etitle: "",
+    edescription: "",
+    etag: "",
+  });
+
   useEffect(() => {
     getNotes();
     // eslint-disable-next-line
   }, []);
-  
+
   const ref = useRef(null);
+  const refClose = useRef(null);
 
   const updateNote = (currentNote) => {
     ref.current.click();
     setnote({
+      id: currentNote._id,
       etitle: currentNote.title,
       edescription: currentNote.description,
       etag: currentNote.tag,
     });
   };
 
-  const [note, setnote] = useState({
-    title: "",
-    description: "",
-    tag: "",
-  });
-
   const handleClick = (e2) => {
     //prevents  refresh of page
     e2.preventDefault();
-    console.log("updating note : "+note)
+    refClose.current.click();
+    // console.log("updating note : " + note);
+    editNote(note.id, note.etitle, note.edescription, note.etag);
   };
 
   const onChange1 = (e) => {
     //sets the value of the screen typed content to variables
     setnote({ ...note, [e.target.name]: e.target.value });
   };
+
+
   return (
     <div className="container">
       <Addnote />
@@ -63,7 +71,7 @@ function Notes() {
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="exampleModalLabel">
-                Edit Note
+               <strong>Edit Note</strong>
               </h1>
               <button
                 type="button"
@@ -75,7 +83,7 @@ function Notes() {
             <div className="modal-body">
               <form>
                 <div className="form-group my-2">
-                  <label htmlFor="title">Title</label>
+                  <label htmlFor="title"> <strong>Title</strong></label>
                   <input
                     type="text"
                     className="form-control"
@@ -86,7 +94,7 @@ function Notes() {
                   />
                 </div>
                 <div className="form-group my-2">
-                  <label htmlFor="description">Description</label>
+                  <label htmlFor="description"><strong>Description</strong></label>
                   <input
                     type="text"
                     className="form-control"
@@ -97,7 +105,7 @@ function Notes() {
                   />
                 </div>
                 <div className="form-group my-2">
-                  <label htmlFor="tag">Tag</label>
+                  <label htmlFor="tag"><strong>Tag</strong></label>
                   <input
                     type="text"
                     className="form-control"
@@ -111,21 +119,29 @@ function Notes() {
             </div>
             <div className="modal-footer">
               <button
+                ref={refClose}
                 type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
               >
                 Close
               </button>
-              <button onClick={handleClick} type="button" className="btn btn-primary">
+              <button
+                
+                onClick={handleClick}
+                type="button"
+                className="btn btn-primary"
+              >
                 Update Note
               </button>
             </div>
           </div>
         </div>
       </div>
-      <h2>Your Note</h2>
-      <div className="row">
+
+       {/* here is where you display all notes */}
+      <h2>Your  <strong style={{color:"red"}}>Note</strong></h2>
+      <div className="row shadow-lg p-3 mb-5 bg-white rounded">
         {notes.map((note) => {
           return (
             <Noteitem key={note._id} note={note} updateNote={updateNote} />

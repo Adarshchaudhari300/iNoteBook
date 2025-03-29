@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
-const { Schema } = mongoose;
-const UserSchema = new Schema({
+
+//destructuring schema from the mongoose ,not needed but looks good
+const { Schema,model } = mongoose;
+
+//creating the schema
+const UserSchema = Schema({
   name: {
     type: String,
     reqired: true,
@@ -21,5 +25,14 @@ const UserSchema = new Schema({
   },
 });
 
+//converting schema to model
+
+
+//destructuring mongoose above and using it 
+// const User = model("user", UserSchema);
+
+//without destructuring
+
+//user is the name of folder that will be created on the mongoDB and where the data will be stored
 const User = mongoose.model("user", UserSchema);
 module.exports = User;

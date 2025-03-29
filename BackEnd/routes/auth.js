@@ -1,12 +1,21 @@
+//express setup
 const express = require("express");
-const User = require("../models/User");
+
+//router setup
 const router = express.Router();
+
+//model schema imported
+const User = require("../models/User");
+
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
+//middleware imported
 const fetchuser = require("../middleware/fetchuser");
 
-//Route 1---------------------------------------------------
+
+//Route 1-----------------------------------------------------------
 //Create a user With post at /api/auth/createuser  -no login required
 router.post(
   "/createuser",
@@ -87,11 +96,11 @@ router.post(
     }
 
     // get email and password from body
-    const { email, password } = req.body;
+    const { email, password } = req.body; 
 
     try {
       //get email form db and compare it with body email
-      let user = await User.findOne({ email });
+      let user = await User.findOne({ email:email });
       if (!user) {
         return res.status(400).json({ success, error: "Enter correct mail" });
       }
@@ -111,7 +120,7 @@ router.post(
       const jwt_secret = "adarshiscoder";
       const jwt_token = jwt.sign(data, jwt_secret);
       // console.log(jwt_token);
-      //this sends files to mongo db
+
       success = true;
       res.json({ success, jwt_token });
     } catch (error) {

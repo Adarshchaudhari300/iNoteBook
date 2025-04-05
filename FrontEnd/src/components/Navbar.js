@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import ImageContext from "../context/images/imageContext";
+import "./Navbar.css";
 
 function Navbar(props) {
+  // Add ImageContext for clearing cache on logout
+  const { clearImageCache } = useContext(ImageContext);
+  
   //sets navigation
   let navigate = useNavigate();
 
@@ -14,16 +19,19 @@ function Navbar(props) {
   // }, [location]);
 
   const handlelogout = () => {
+    // Clear image cache when logging out
+    clearImageCache();
     localStorage.removeItem("authtoken");
     navigate("/login");
     props.showAlert("Logged Out ", "success");
   };
 
   return (
-    <nav className="navbar navbar-dark bg-dark navbar-expand-lg ">
-      <div className="container-fluid">
+    <nav className="navbar navbar-expand-lg navbar-custom">
+      <div className="container">
         <Link className="navbar-brand" to="/">
-          Navbar
+          <i className="fas fa-book-open me-2"></i>
+          iNoteBook
         </Link>
         <button
           className="navbar-toggler"
@@ -46,7 +54,7 @@ function Navbar(props) {
                 aria-current="page"
                 to="/"
               >
-                Home
+                <i className="fas fa-home me-1"></i> Home
               </Link>
             </li>
             <li className="nav-item">
@@ -56,35 +64,60 @@ function Navbar(props) {
                 }`}
                 to="/about"
               >
-                About
+                <i className="fas fa-info-circle me-1"></i> About
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                className={`nav-link ${
+                  location.pathname === "/images" ? "active" : ""
+                }`}
+                to="/images"
+              >
+                <i className="fas fa-images me-1"></i> Images
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                className={`nav-link ${
+                  location.pathname === "/notes" ? "active" : ""
+                }`}
+                to="/notes"
+              >
+                <i className="fas fa-sticky-note me-1"></i> Notes
               </Link>
             </li>
           </ul>
           {!localStorage.getItem("authtoken") ? (
-            <form className="d-flex" role="search">
+            <div className="d-flex auth-buttons">
               <Link
-                className={`btn mx-1 btn-${
-                  location.pathname === "/login" ? "dark" : "primary"
+                className={`btn auth-btn ${
+                  location.pathname === "/login" ? "btn-login-active" : "btn-login"
                 }`}
                 to="/login"
                 role="button"
               >
-                Login
+                <i className="fas fa-sign-in-alt me-1"></i> Login
               </Link>
               <Link
-                className={`btn  mx-1 btn-${
-                  location.pathname === "/signup" ? "dark" : "primary"
+                className={`btn auth-btn ${
+                  location.pathname === "/signup" ? "btn-signup-active" : "btn-signup"
                 }`}
                 to="/signup"
                 role="button"
               >
-                SignUp
+                <i className="fas fa-user-plus me-1"></i> Sign Up
               </Link>
-            </form>
+            </div>
           ) : (
-            <button className="btn btn-primary" onClick={handlelogout}>
-              Log Out
-            </button>
+            <div className="d-flex align-items-center">
+              <span className="user-greeting me-3">
+                <i className="fas fa-user-circle me-1"></i> Welcome
+              </span>
+              <button className="btn btn-logout" onClick={handlelogout}>
+                <i className="fas fa-sign-out-alt me-1"></i> Log Out
+              </button>
+            </div>
           )}
         </div>
       </div>

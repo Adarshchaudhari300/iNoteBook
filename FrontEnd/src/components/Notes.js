@@ -1,20 +1,25 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import noteContext from "../context/notes/noteContext";
 import Noteitem from "./Noteitem";
-import Addnote from "./Addnote";
 import { useNavigate } from "react-router-dom";
 import "./Notes.css";
 
 function Notes(props) {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const NoteContext = useContext(noteContext);
-  let { notes, getNotes, editNote } = NoteContext;
+  const { notes, getNotes, editNote, addNote } = NoteContext;
 
-  const [note, setnote] = useState({
+  const [note, setNote] = useState({
     id: "",
     etitle: "",
     edescription: "",
     etag: "",
+  });
+
+  const [newNote, setNewNote] = useState({
+    title: "",
+    description: "",
+    tag: "",
   });
 
   useEffect(() => {
@@ -32,7 +37,7 @@ function Notes(props) {
 
   const updateNote = (currentNote) => {
     ref.current.click();
-    setnote({
+    setNote({
       id: currentNote._id,
       etitle: currentNote.title,
       edescription: currentNote.description,
@@ -40,61 +45,179 @@ function Notes(props) {
     });
   };
 
-  const [modal, setmodal] = useState({
+  const [modal, setModal] = useState({
     btitle: "",
     bdescription: "",
     btag: "",
   });
+
   const openText = (currentNote) => {
     refOpen.current.click();
-    setmodal({
+    setModal({
       btitle: currentNote.title,
       bdescription: currentNote.description,
       btag: currentNote.tag,
     });
   };
 
-  const handleClick = (e2) => {
-    //prevents  refresh of page
-    e2.preventDefault();
+  const handleEditClick = (e) => {
+    e.preventDefault();
     refClose.current.click();
-    // console.log("updating note : " + note);
     editNote(note.id, note.etitle, note.edescription, note.etag);
     props.showAlert("Note Updated Successfully", "success");
   };
 
-  const onChange1 = (e) => {
-    //sets the value of the screen typed content to variables
-    setnote({ ...note, [e.target.name]: e.target.value });
+  const handleAddClick = (e) => {
+    e.preventDefault();
+    addNote(newNote.title, newNote.description, newNote.tag);
+    setNewNote({ title: "", description: "", tag: "" });
+    props.showAlert("Note Added Successfully", "success");
+  };
+
+  const onEditChange = (e) => {
+    setNote({ ...note, [e.target.name]: e.target.value });
+  };
+
+  const onAddChange = (e) => {
+    setNewNote({ ...newNote, [e.target.name]: e.target.value });
   };
 
   return (
-    <div className="container">
-      <Addnote showAlert={props.showAlert} />
+    <div className="notes-container animate-fadeIn">
+      <div className="notes-header">
+        <h1>Your Notes Collection</h1>
+        <p className="notes-subtitle">Create, organize, and manage your thoughts</p>
+      </div>
 
+      <div className="notes-content">
+        <div className="notes-add-section">
+          <div className="add-note-card">
+            <div className="add-note-header">
+              <h2><i className="fas fa-plus-circle me-2"></i> Create New Note</h2>
+            </div>
+            <div className="add-note-body">
+              <form>
+                <div className="mb-3">
+                  <label htmlFor="title" className="form-label">Title</label>
+                  <div className="input-group">
+                    <span className="input-group-text">
+                      <i className="fas fa-heading"></i>
+                    </span>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="title"
+                      name="title"
+                      placeholder="Enter note title"
+                      value={newNote.title}
+                      onChange={onAddChange}
+                      required
+                    />
+                  </div>
+                  <small className="form-text text-muted">
+                    Minimum 3 characters required
+                  </small>
+                </div>
+                
+                <div className="mb-3">
+                  <label htmlFor="description" className="form-label">Description</label>
+                  <div className="input-group">
+                    <span className="input-group-text">
+                      <i className="fas fa-align-left"></i>
+                    </span>
+                    <textarea
+                      className="form-control"
+                      id="description"
+                      name="description"
+                      rows="4"
+                      placeholder="Enter note description"
+                      value={newNote.description}
+                      onChange={onAddChange}
+                      required
+                    ></textarea>
+                  </div>
+                  <small className="form-text text-muted">
+                    Minimum 5 characters required
+                  </small>
+                </div>
+                
+                <div className="mb-4">
+                  <label htmlFor="tag" className="form-label">Tag</label>
+                  <div className="input-group">
+                    <span className="input-group-text">
+                      <i className="fas fa-tag"></i>
+                    </span>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="tag"
+                      name="tag"
+                      placeholder="Add a tag (optional)"
+                      value={newNote.tag}
+                      onChange={onAddChange}
+                    />
+                  </div>
+                </div>
+                
+                <button 
+                  type="submit" 
+                  className="btn btn-primary w-100"
+                  disabled={newNote.title.length < 3 || newNote.description.length < 5}
+                  onClick={handleAddClick}
+                >
+                  <i className="fas fa-plus me-2"></i> Add Note
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        
+        <div className="notes-list-section">
+          <div className="notes-list-header">
+            <h2><i className="fas fa-sticky-note me-2"></i> Your Notes</h2>
+            {notes.length === 0 && (
+              <p className="text-muted">No notes to display. Create your first note!</p>
+            )}
+          </div>
+
+          <div className="notes-grid">
+            {notes.map((note) => (
+              <Noteitem
+                key={note._id}
+                note={note}
+                showAlert={props.showAlert}
+                updateNote={updateNote}
+                openText={openText}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Edit Note Modal */}
       <button
         ref={ref}
         type="button"
         className="btn btn-primary d-none"
         data-bs-toggle="modal"
-        data-bs-target="#exampleModal1"
+        data-bs-target="#editNoteModal"
       >
-        Launch demo modal
+        Edit Modal
       </button>
 
       <div
         className="modal fade"
-        id="exampleModal1"
+        id="editNoteModal"
         tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
+        aria-labelledby="editNoteModalLabel"
         aria-hidden="true"
       >
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalLabel">
-                <strong>Edit Note</strong>
-              </h1>
+              <h5 className="modal-title" id="editNoteModalLabel">
+                <i className="fas fa-edit me-2"></i> Edit Note
+              </h5>
               <button
                 type="button"
                 className="btn-close"
@@ -104,44 +227,39 @@ function Notes(props) {
             </div>
             <div className="modal-body">
               <form>
-                <div className="form-group my-2">
-                  <label htmlFor="title">
-                    {" "}
-                    <strong>Title</strong>
-                  </label>
+                <div className="mb-3">
+                  <label htmlFor="etitle" className="form-label">Title</label>
                   <input
                     type="text"
                     className="form-control"
                     id="etitle"
-                    onChange={onChange1}
                     name="etitle"
                     value={note.etitle}
+                    onChange={onEditChange}
+                    required
                   />
                 </div>
-                <div className="form-group my-2">
-                  <label htmlFor="description">
-                    <strong>Description</strong>
-                  </label>
-                  <input
-                    type="text"
+                <div className="mb-3">
+                  <label htmlFor="edescription" className="form-label">Description</label>
+                  <textarea
                     className="form-control"
                     id="edescription"
-                    onChange={onChange1}
                     name="edescription"
+                    rows="4"
                     value={note.edescription}
-                  />
+                    onChange={onEditChange}
+                    required
+                  ></textarea>
                 </div>
-                <div className="form-group my-2">
-                  <label htmlFor="tag">
-                    <strong>Tag</strong>
-                  </label>
+                <div className="mb-3">
+                  <label htmlFor="etag" className="form-label">Tag</label>
                   <input
                     type="text"
                     className="form-control"
                     id="etag"
-                    onChange={onChange1}
                     name="etag"
                     value={note.etag}
+                    onChange={onEditChange}
                   />
                 </div>
               </form>
@@ -156,84 +274,60 @@ function Notes(props) {
                 Close
               </button>
               <button
-                onClick={handleClick}
+                onClick={handleEditClick}
                 type="button"
                 className="btn btn-primary"
               >
-                Update Note
+                <i className="fas fa-save me-2"></i> Update Note
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Modal For displaying the text note in modal */}
-      {/* ------------------------------------------------------------------------------ */}
-      <div>
-        <button
-          ref={refOpen}
-          type="button"
-          className="btn btn-primary d-none"
-          data-bs-toggle="modal"
-          data-bs-target="#exampleModal"
-        >
-          Launch demo modal
-        </button>
+      {/* View Note Modal */}
+      <button
+        ref={refOpen}
+        type="button"
+        className="btn btn-primary d-none"
+        data-bs-toggle="modal"
+        data-bs-target="#viewNoteModal"
+      >
+        View Modal
+      </button>
 
-        <div
-          className="modal fade"
-          id="exampleModal"
-          tabIndex="-1"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog modal-dialog-scrollable">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h1 className="modal-title fs-5" id="exampleModalLabel">
-                  <strong>Title : </strong> {modal.btitle}
-                </h1>
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
+      <div
+        className="modal fade"
+        id="viewNoteModal"
+        tabIndex="-1"
+        aria-labelledby="viewNoteModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-scrollable">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="viewNoteModalLabel">
+                {modal.btitle}
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <div className="note-tag mb-3">
+                <span className="badge bg-secondary">
+                  <i className="fas fa-tag me-1"></i> {modal.btag}
+                </span>
               </div>
-              <div id="tagidscroll" className="modal-body fs-5">
-                <strong className="fs-5">Tag :</strong> {modal.btag}
-              </div>
-              <div className="modal-body ">
-                {" "}
-                <strong  className="fs-5">Description : </strong>{" "}
-                {modal.bdescription}
+              <div className="note-content">
+                <p>{modal.bdescription}</p>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      {/* ------------------------------------------------------------------------ */}
-
-      {/* here is where you display all notes */}
-      <h2 style={{ marginLeft: "22px" }}>
-        <strong style={{ color: "red" }}>All</strong> Notes
-      </h2>
-      <div
-        id="scrollbarsetting"
-        className="row shadow-lg mt-4 p-3 mb-5 bg-white rounded"
-        style={{ height: "64vh" }}
-      >
-        {notes.map((note) => {
-          return (
-            <Noteitem
-              key={note._id}
-              note={note}
-              showAlert={props.showAlert}
-              updateNote={updateNote}
-              openText={openText}
-            />
-          );
-        })}
       </div>
     </div>
   );

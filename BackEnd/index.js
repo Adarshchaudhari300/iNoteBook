@@ -24,7 +24,8 @@ app.use(cors());
 
 //---------------------------------------------------------------
 //necessary to use json as CRUD operators
-app.use(express.json()); //middleware
+app.use(express.json({ limit: '50mb' })); //middleware
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 //---------------------------------------------------------------
 
 
@@ -43,6 +44,7 @@ app.use("/api/auth", auth);
 // app.use("/api/auth", require("./routes/auth"));
 
 app.use("/api/notes", require("./routes/notes"));
+app.use("/api/images", require("./routes/images"));
 //--------------------------------------------------------------
 
 

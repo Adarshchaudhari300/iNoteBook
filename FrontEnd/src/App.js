@@ -4,9 +4,12 @@ import Home from "./components/Home";
 import Navbar from "./components/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NoteState from "./context/notes/NoteState";
+import ImageState from "./context/images/ImageState";
 import Alert from "./components/Alert";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
+import Images from "./components/Images";
+import Notes from "./components/Notes";
 import { useState } from "react";
 
 function App() {
@@ -23,22 +26,26 @@ function App() {
   };
   return (
     <>
-      {/* this note state is added to use context api */}
+      {/* Context API providers */}
       <NoteState>
-        <Router>
-          {/* This is Navbar */}
-          <Navbar showAlert={showAlert}/>
-          <Alert alert={alert} />
+        <ImageState>
+          <Router>
+            {/* This is Navbar */}
+            <Navbar showAlert={showAlert}/>
+            <Alert alert={alert} />
 
-          <div className="container">
-            <Routes>
-              <Route exact path="/" element={<Home showAlert={showAlert}/>} />
-              <Route exact path="/about" element={<About />} />
-              <Route exact path="/login" element={<Login showAlert={showAlert}/>} />
-              <Route exact path="/signup" element={<SignUp showAlert={showAlert}/>} />
-            </Routes>
-          </div>
-        </Router>
+            <div className="container">
+              <Routes>
+                <Route exact path="/" element={<Home showAlert={showAlert}/>} />
+                <Route exact path="/about" element={<About />} />
+                <Route exact path="/login" element={<Login showAlert={showAlert}/>} />
+                <Route exact path="/signup" element={<SignUp showAlert={showAlert}/>} />
+                <Route exact path="/images" element={<Images showAlert={showAlert}/>} />
+                <Route exact path="/notes" element={<Notes showAlert={showAlert}/>} />
+              </Routes>
+            </div>
+          </Router>
+        </ImageState>
       </NoteState>
     </>
   );

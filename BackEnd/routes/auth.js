@@ -262,4 +262,40 @@ router.put("/updateprofilepic", fetchuser, async (req, res) => {
   }
 });
 
+//Route 7---------------------------------------------------
+// Get another user's details by ID (for messaging) - login required
+router.get("/user/:userId", fetchuser, async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    
+    // Find user by ID
+    const user = await User.findById(userId).select("-password");
+    
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+    
+    res.json(user);
+    
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ success: false, error: "Server error while fetching user" });
+  }
+});
+
+//Route 8---------------------------------------------------
+// Get all users (for messaging contacts) - login required
+router.get("/allusers", fetchuser, async (req, res) => {
+  try {
+    // Find all users except the current user
+    const users = await User.find({ _id: { $ne: req.user.id } }).select("-password");
+    
+    res.json(users);
+    
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ success: false, error: "Server error while fetching users" });
+  }
+});
+
 module.exports = router;

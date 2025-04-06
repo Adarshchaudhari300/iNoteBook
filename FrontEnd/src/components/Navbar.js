@@ -112,6 +112,16 @@ function Navbar(props) {
                 <i className="fas fa-sticky-note me-1"></i> Notes
               </Link>
             </li>
+            <li className="nav-item">
+              <Link
+                className={`nav-link ${
+                  location.pathname === "/messages" ? "active" : ""
+                }`}
+                to="/messages"
+              >
+                <i className="fas fa-comments me-1"></i> Messages
+              </Link>
+            </li>
           </ul>
           
           <div className="theme-toggle-wrapper me-3">

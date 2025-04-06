@@ -6,6 +6,7 @@ const UserState = (props) => {
   const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [users, setUsers] = useState([]);
 
   // Get User Data
   const getUserData = async () => {
@@ -156,6 +157,24 @@ const UserState = (props) => {
     setUserData(null);
   };
 
+  // Get all users for messaging
+  const getAllUsers = async () => {
+    try {
+      const response = await fetch(`${host}/api/auth/allusers`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("authtoken"),
+        },
+      });
+      const json = await response.json();
+      setUsers(Array.isArray(json) ? json : []);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      setUsers([]);
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{ 
@@ -167,7 +186,9 @@ const UserState = (props) => {
         updateProfilePicture,
         fileToBase64,
         changeUserPassword,
-        clearUserData 
+        clearUserData,
+        users,
+        getAllUsers
       }}
     >
       {props.children}

@@ -1,17 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import userContext from "../context/user/userContext";
 import "./Auth.css";
 
 const SignUp = (props) => {
+  const { fileToBase64 } = useContext(userContext);
   const [credentials, setCredentials] = useState({
     name: "",
     email: "",
     password: "",
     cpassword: "",
   });
+  const [profilePic, setProfilePic] = useState(null);
+  const [profilePicBase64, setProfilePicBase64] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [passwordMatch, setPasswordMatch] = useState(true);
   const navigate = useNavigate();
+
+  const handleProfilePicChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfilePic(file);
+      try {
+        const base64 = await fileToBase64(file);
+        setProfilePicBase64(base64);
+      } catch (error) {
+        console.error("Error converting image to base64:", error);
+        props.showAlert("Error processing image", "danger");
+      }
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,6 +53,7 @@ const SignUp = (props) => {
           name: name,
           email: email,
           password: password,
+          profilePic: profilePicBase64
         }),
       });
 
@@ -72,6 +91,42 @@ const SignUp = (props) => {
         
         <div className="auth-body">
           <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label htmlFor="profilePic" className="form-label">Profile Picture</label>
+              <div className="profile-pic-upload">
+                {profilePicBase64 ? (
+                  <div className="profile-pic-preview">
+                    <img src={profilePicBase64} alt="Profile Preview" className="preview-image" />
+                    <button 
+                      type="button" 
+                      className="remove-pic-btn"
+                      onClick={() => {
+                        setProfilePic(null);
+                        setProfilePicBase64("");
+                      }}
+                    >
+                      <i className="fas fa-times"></i>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="profile-pic-placeholder">
+                    <i className="fas fa-user-circle"></i>
+                    <p>Add Profile Picture</p>
+                    <input
+                      type="file"
+                      id="profilePic"
+                      className="file-input"
+                      accept="image/*"
+                      onChange={handleProfilePicChange}
+                    />
+                    <label htmlFor="profilePic" className="upload-btn">
+                      <i className="fas fa-camera me-2"></i> Select Image
+                    </label>
+                  </div>
+                )}
+              </div>
+            </div>
+            
             <div className="mb-4">
               <label htmlFor="name" className="form-label">Name</label>
               <div className="input-group">

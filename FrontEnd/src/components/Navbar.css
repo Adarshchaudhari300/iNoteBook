@@ -1,7 +1,8 @@
 .navbar-custom {
-  background-color: #fff;
+  background-color: var(--card-bg);
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
   padding: 15px 0;
+  transition: background-color 0.3s ease;
 }
 
 .navbar-brand {
@@ -17,7 +18,7 @@
 
 .nav-link {
   font-weight: 500;
-  color: var(--dark-color);
+  color: var(--text-color);
   position: relative;
   margin-right: 20px;
   padding: 0.5rem 0;
@@ -41,6 +42,41 @@
   height: 3px;
   background-color: var(--primary-color);
   border-radius: 3px;
+}
+
+/* Theme Toggle */
+.theme-toggle-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.theme-toggle-btn {
+  background-color: transparent;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-color);
+  font-size: 1.2rem;
+}
+
+.theme-toggle-btn:hover {
+  background-color: rgba(var(--primary-rgb), 0.1);
+  color: var(--primary-color);
+}
+
+[data-theme="dark"] .theme-toggle-btn {
+  color: #f8c291;
+}
+
+[data-theme="dark"] .theme-toggle-btn:hover {
+  background-color: rgba(248, 194, 145, 0.1);
+  color: #f8c291;
 }
 
 /* Auth buttons */
@@ -95,9 +131,66 @@
 }
 
 .user-greeting {
-  color: var(--dark-color);
+  color: var(--text-color);
   font-weight: 500;
   font-size: 0.95rem;
+}
+
+.user-profile-link {
+  color: var(--muted-color);
+  text-decoration: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+}
+
+.user-profile-link:hover {
+  color: var(--primary-color);
+  background-color: rgba(var(--primary-rgb), 0.05);
+}
+
+.user-profile-link.active {
+  color: var(--primary-color);
+  background-color: rgba(var(--primary-rgb), 0.1);
+}
+
+.user-profile-link i {
+  font-size: 1.1rem;
+  margin-right: 0.5rem;
+}
+
+.navbar-profile-pic {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 8px;
+  overflow: hidden;
+  position: relative;
+  border: 2px solid rgba(var(--primary-rgb), 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navbar-profile-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.navbar-profile-initials {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
 /* Responsive styles */
@@ -108,7 +201,7 @@
   
   .nav-link {
     padding: 0.75rem 0;
-    border-bottom: 1px solid #f1f1f1;
+    border-bottom: 1px solid var(--border-color);
   }
   
   .nav-link.active::after {
@@ -128,5 +221,10 @@
   
   .auth-buttons .btn {
     flex: 1;
+  }
+  
+  .theme-toggle-wrapper {
+    margin: 10px 0;
+    justify-content: flex-end;
   }
 } 

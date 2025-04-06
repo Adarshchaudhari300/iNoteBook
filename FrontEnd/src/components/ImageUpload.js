@@ -169,158 +169,136 @@ const ImageUpload = (props) => {
   };
 
   return (
-    <div className="upload-container animate-slideIn">
-      <div className="upload-card">
-        <div className="upload-header">
-          <h2><i className="fas fa-cloud-upload-alt me-2"></i> Upload New Image</h2>
-          <p className="upload-subtitle">Add a new image to your collection</p>
-        </div>
-        
-        <div className="upload-body">
-          <div className="row">
-            <div className="col-md-6">
-              <form onSubmit={handleSubmit}>
-                <div className="mb-4">
-                  <label htmlFor="imageUpload" className="form-label">Select Image</label>
-                  <div 
-                    className={`drag-drop-area ${dragActive ? 'drag-active' : ''}`}
-                    onDragEnter={handleDrag}
-                    onDragLeave={handleDrag}
-                    onDragOver={handleDrag}
-                    onDrop={handleDrop}
-                  >
-                    <div className="drag-drop-content">
-                      <i className="fas fa-cloud-upload-alt"></i>
-                      <p>Drag & Drop your image here or</p>
-                      <label className="btn btn-outline-primary btn-sm upload-btn">
-                        Browse Files
-                        <input 
-                          type="file" 
-                          id="imageUpload" 
-                          className="file-input" 
-                          accept="image/*"
-                          onChange={handleImageChange}
-                        />
-                      </label>
-                    </div>
-                  </div>
-                  {originalSize > 0 && (
-                    <div className="file-info">
-                      <div className="file-size">
-                        <span className="file-label">File Size:</span>
-                        <span className="file-value">
-                          {originalSize.toFixed(2)} MB
-                          {compressedSize > 0 && (
-                            <span className="compress-info">
-                              <i className="fas fa-arrow-right mx-1"></i>
-                              {compressedSize.toFixed(2)} MB
-                              <span className="savings">
-                                ({Math.round((1 - compressedSize/originalSize) * 100)}% saved)
-                              </span>
-                            </span>
-                          )}
-                        </span>
-                      </div>
-                      <div className="file-name">
-                        <span className="file-label">File:</span>
-                        <span className="file-value">{selectedImage?.name}</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                
-                <div className="mb-3">
-                  <label htmlFor="imageTitle" className="form-label">Image Title</label>
+    <div className="container">
+      <h2 className="screen-title mb-4">Select Image</h2>
+      <div className="upload-container animate-slideIn">
+        <div className="row">
+          <div className="col-md-7">
+            <div className="upload-area">
+              <div 
+                className={`drag-drop-area ${dragActive ? 'drag-active' : ''}`}
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
+              >
+                <div className="drag-drop-content">
+                  <i className="fas fa-cloud-upload-alt"></i>
+                  <p>Drag & Drop your image here or</p>
+                  <button className="btn btn-primary browse-btn" onClick={() => document.getElementById('imageUpload').click()}>
+                    Browse Files
+                  </button>
                   <input 
-                    type="text" 
-                    className="form-control" 
-                    id="imageTitle"
-                    value={imageTitle}
-                    onChange={(e) => setImageTitle(e.target.value)}
-                    placeholder="Enter a descriptive title"
-                    required
+                    type="file" 
+                    id="imageUpload" 
+                    className="file-input" 
+                    accept="image/*" 
+                    onChange={handleImageChange}
                   />
                 </div>
-                
-                <div className="mb-4">
-                  <label htmlFor="imageDescription" className="form-label">Description</label>
-                  <textarea 
-                    className="form-control" 
-                    id="imageDescription" 
-                    rows="3"
-                    value={imageDescription}
-                    onChange={(e) => setImageDescription(e.target.value)}
-                    placeholder="Add description and tags with #hashtag"
-                  ></textarea>
-                  <small className="form-text text-muted">
-                    Add tags with # symbol (e.g. #nature #travel)
+              </div>
+              
+              <div className="mb-3 mt-4">
+                <label htmlFor="imageTitle" className="form-label">Image Title</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  id="imageTitle" 
+                  value={imageTitle} 
+                  onChange={(e) => setImageTitle(e.target.value)}
+                  placeholder="Enter a title for your image"
+                  required
+                />
+              </div>
+              
+              <div className="mb-3">
+                <label htmlFor="imageDescription" className="form-label">Description</label>
+                <textarea 
+                  className="form-control" 
+                  id="imageDescription"
+                  rows="4" 
+                  value={imageDescription} 
+                  onChange={(e) => setImageDescription(e.target.value)}
+                  placeholder="Add description and tags with #hashtag"
+                ></textarea>
+                <small className="form-text text-muted">Add tags with # symbol (e.g. #nature #travel)</small>
+              </div>
+              
+              <button 
+                type="button" 
+                className="btn btn-primary w-100 mt-4 upload-btn"
+                onClick={handleSubmit}
+                disabled={!selectedImage || isUploading}
+              >
+                <i className="fas fa-cloud-upload-alt me-2"></i>
+                {isUploading ? 'Uploading...' : 'Upload Image'}
+              </button>
+              
+              {isUploading && (
+                <div className="upload-progress mt-3">
+                  <div className="progress">
+                    <div 
+                      className="progress-bar" 
+                      role="progressbar" 
+                      style={{ width: `${uploadProgress}%` }} 
+                      aria-valuenow={uploadProgress} 
+                      aria-valuemin="0" 
+                      aria-valuemax="100"
+                    ></div>
+                  </div>
+                  <small className="text-muted d-block text-center mt-2">
+                    {uploadProgress < 50 ? 'Compressing image...' : 'Uploading to server...'}
                   </small>
                 </div>
-                
-                {isUploading && (
-                  <div className="upload-progress mb-4">
-                    <div className="d-flex justify-content-between mb-1">
-                      <span>Upload Progress</span>
-                      <span>{uploadProgress}%</span>
-                    </div>
-                    <div className="progress">
-                      <div 
-                        className="progress-bar" 
-                        role="progressbar" 
-                        style={{width: `${uploadProgress}%`}} 
-                        aria-valuenow={uploadProgress} 
-                        aria-valuemin="0" 
-                        aria-valuemax="100"
-                      ></div>
-                    </div>
-                    <small className="text-muted mt-1 d-block">
-                      {uploadProgress < 50 ? 'Compressing image...' : 'Uploading to server...'}
-                    </small>
-                  </div>
-                )}
-                
-                <button 
-                  type="submit" 
-                  className="btn btn-primary btn-lg w-100"
-                  disabled={isUploading || !selectedImage}
-                >
-                  {isUploading ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                      Uploading...
-                    </>
-                  ) : (
-                    <>
-                      <i className="fas fa-cloud-upload-alt me-2"></i> Upload Image
-                    </>
-                  )}
-                </button>
-              </form>
+              )}
             </div>
-            
-            <div className="col-md-6">
+          </div>
+          
+          <div className="col-md-5">
+            <div className="preview-section">
+              <h4 className="mb-3">Preview</h4>
               <div className="preview-container">
                 {previewUrl ? (
                   <div className="image-preview">
-                    <img 
-                      src={previewUrl} 
-                      alt="Preview" 
-                      className="preview-image" 
-                    />
-                    <div className="preview-overlay">
-                      <h5 className="preview-title">{imageTitle || 'Image Preview'}</h5>
-                      {imageDescription && (
-                        <p className="preview-description">{imageDescription}</p>
-                      )}
-                    </div>
+                    <img src={previewUrl} alt="Preview" className="preview-image" />
+                    {(imageTitle || imageDescription) && (
+                      <div className="preview-overlay">
+                        {imageTitle && <h5 className="preview-title">{imageTitle}</h5>}
+                        {imageDescription && <p className="preview-description">{imageDescription}</p>}
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="no-preview">
-                    <i className="fas fa-image"></i>
+                    <i className="far fa-image"></i>
                     <p>Preview will appear here</p>
                   </div>
                 )}
               </div>
+              
+              {selectedImage && (
+                <div className="file-info mt-3">
+                  <div className="file-name">
+                    <span className="file-label">File:</span>
+                    <span className="file-value">{selectedImage.name}</span>
+                  </div>
+                  <div className="file-size">
+                    <span className="file-label">Size:</span>
+                    <span className="file-value">
+                      {originalSize.toFixed(2)} MB
+                      {compressedSize > 0 && (
+                        <span className="compress-info">
+                          <i className="fas fa-arrow-right mx-1"></i>
+                          {compressedSize.toFixed(2)} MB
+                          <span className="savings">
+                            ({Math.round((1 - compressedSize / originalSize) * 100)}% saved)
+                          </span>
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -56,6 +56,7 @@ router.post(
         name: req.body.name,
         email: req.body.email,
         password: secPass,
+        profilePic: req.body.profilePic || "",
       });
 
       const jwt_secret = "adarshiscoder";
@@ -140,6 +141,124 @@ router.post("/getuser", fetchuser, async (req, res) => {
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Some Code error in Route 3 in auth.js");
+  }
+});
+
+//Route 4---------------------------------------------------
+// Update user name - login required
+router.put("/updateprofile", fetchuser, [
+  // name must be at least 3 chars long
+  body("name", "Name must be at least 3 characters").isLength({ min: 3 }),
+], async (req, res) => {
+  try {
+    const { name, profilePic } = req.body;
+    
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
+    
+    // Find and update user
+    const userid = req.user.id;
+    const user = await User.findById(userid);
+    
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+    
+    // Update user fields
+    if (name) user.name = name;
+    if (profilePic !== undefined) user.profilePic = profilePic;
+    
+    await user.save();
+    
+    // Return updated user without password
+    const updatedUser = await User.findById(userid).select("-password");
+    res.json({ success: true, user: updatedUser });
+    
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ success: false, error: "Server error while updating profile" });
+  }
+});
+
+//Route 5---------------------------------------------------
+// Change password - login required
+router.put("/changepassword", fetchuser, [
+  // current password validation
+  body("currentPassword", "Current password is required").exists(),
+  // new password validation
+  body("newPassword", "New password must be at least 5 characters").isLength({ min: 5 }),
+], async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
+    
+    // Find user
+    const userid = req.user.id;
+    const user = await User.findById(userid);
+    
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+    
+    // Verify current password
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ success: false, error: "Current password is incorrect" });
+    }
+    
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    
+    // Update password
+    user.password = hashedPassword;
+    await user.save();
+    
+    res.json({ success: true, message: "Password updated successfully" });
+    
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ success: false, error: "Server error while changing password" });
+  }
+});
+
+//Route 6---------------------------------------------------
+// Update profile picture - login required
+router.put("/updateprofilepic", fetchuser, async (req, res) => {
+  try {
+    const { profilePic } = req.body;
+    
+    if (!profilePic) {
+      return res.status(400).json({ success: false, error: "Profile picture is required" });
+    }
+    
+    // Find user
+    const userid = req.user.id;
+    const user = await User.findById(userid);
+    
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+    
+    // Update profile picture
+    user.profilePic = profilePic;
+    await user.save();
+    
+    // Return updated user without password
+    const updatedUser = await User.findById(userid).select("-password");
+    res.json({ success: true, user: updatedUser });
+    
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ success: false, error: "Server error while updating profile picture" });
   }
 });
 

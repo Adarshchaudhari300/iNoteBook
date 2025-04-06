@@ -1,26 +1,51 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ImageContext from "../context/images/imageContext";
+import UserContext from "../context/user/userContext";
+import ThemeContext from "../context/theme/themeContext";
 import "./Navbar.css";
 
 function Navbar(props) {
-  // Add ImageContext for clearing cache on logout
+  // Add context for clearing caches on logout
   const { clearImageCache } = useContext(ImageContext);
+  const { userData, clearUserData, getUserData } = useContext(UserContext);
+  const { theme, toggleTheme } = useContext(ThemeContext);
+  const [userInitials, setUserInitials] = useState('');
   
   //sets navigation
   let navigate = useNavigate();
 
   //it sets the location of the router
   const location = useLocation();
-  //below code is used to put location in console log
-  //import useEffect from react first
-  // useEffect(() => {
-  //   console.log(location.pathname);
-  // }, [location]);
+  
+  // Fetch user data when component mounts if auth token exists
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (localStorage.getItem("authtoken") && !userData) {
+        await getUserData();
+      }
+    };
+    
+    fetchUserData();
+    // eslint-disable-next-line
+  }, []);
+  
+  // Update user initials when userData changes
+  useEffect(() => {
+    if (userData && userData.name) {
+      const initials = userData.name
+        .split(' ')
+        .map(part => part[0])
+        .join('')
+        .toUpperCase();
+      setUserInitials(initials);
+    }
+  }, [userData]);
 
   const handlelogout = () => {
-    // Clear image cache when logging out
+    // Clear caches when logging out
     clearImageCache();
+    clearUserData();
     localStorage.removeItem("authtoken");
     navigate("/login");
     props.showAlert("Logged Out ", "success");
@@ -88,6 +113,21 @@ function Navbar(props) {
               </Link>
             </li>
           </ul>
+          
+          <div className="theme-toggle-wrapper me-3">
+            <button 
+              className="theme-toggle-btn" 
+              onClick={toggleTheme} 
+              title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+            >
+              {theme === 'light' ? (
+                <i className="fas fa-moon"></i>
+              ) : (
+                <i className="fas fa-sun"></i>
+              )}
+            </button>
+          </div>
+          
           {!localStorage.getItem("authtoken") ? (
             <div className="d-flex auth-buttons">
               <Link
@@ -111,9 +151,22 @@ function Navbar(props) {
             </div>
           ) : (
             <div className="d-flex align-items-center">
-              <span className="user-greeting me-3">
-                <i className="fas fa-user-circle me-1"></i> Welcome
-              </span>
+              <Link
+                to="/profile"
+                className={`user-profile-link me-3 ${
+                  location.pathname === "/profile" ? "active" : ""
+                }`}
+                title="View your profile"
+              >
+                <div className="navbar-profile-pic">
+                  {userData && userData.profilePic ? (
+                    <img src={userData.profilePic} alt={userData.name || "User"} />
+                  ) : (
+                    <div className="navbar-profile-initials">{userInitials || "U"}</div>
+                  )}
+                </div>
+                <span>Profile</span>
+              </Link>
               <button className="btn btn-logout" onClick={handlelogout}>
                 <i className="fas fa-sign-out-alt me-1"></i> Log Out
               </button>

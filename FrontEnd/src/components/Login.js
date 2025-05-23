@@ -7,13 +7,14 @@ const Login = (props) => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
 
+
   //set navigation to navigate on click on submit
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
       const response = await fetch(`http://localhost:5000/api/auth/login`, {
         method: "POST",
@@ -48,14 +49,18 @@ const Login = (props) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
+ 
+
   return (
     <div className="auth-container animate-fadeIn">
       <div className="auth-card">
         <div className="auth-header">
-          <h2><i className="fas fa-sign-in-alt me-2"></i> Login</h2>
+          <h2>
+            <i className="fas fa-sign-in-alt me-2"></i> Login
+          </h2>
           <p className="auth-subtitle">Welcome back to your image collection</p>
         </div>
-        
+
         <div className="auth-body">
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
@@ -79,7 +84,7 @@ const Login = (props) => {
                 />
               </div>
             </div>
-            
+
             <div className="mb-4">
               <label htmlFor="password" className="form-label">
                 Password
@@ -100,15 +105,19 @@ const Login = (props) => {
                 />
               </div>
             </div>
-
-            <button 
-              type="submit" 
-              className="btn btn-primary btn-lg w-100" 
+           
+            <button
+              type="submit"
+              className="btn btn-primary btn-lg w-100"
               disabled={isLoading}
             >
               {isLoading ? (
                 <>
-                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
                   Logging in...
                 </>
               ) : (
@@ -118,9 +127,11 @@ const Login = (props) => {
               )}
             </button>
           </form>
-          
+
           <div className="auth-footer">
-            <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
+            <p>
+              Don't have an account? <Link to="/signup">Sign up</Link>
+            </p>
           </div>
         </div>
       </div>

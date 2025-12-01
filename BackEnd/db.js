@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const mongoURI = "mongodb://localhost:27017/inotebook";
+const mongoURI = "mongodb+srv://krsadarsh:Krsadarsh%403000@free-cluster.fedg58a.mongodb.net/";
 //putting "/inotebook"creates the new folder in the mongo db database
 
 const connectToMongo = async () => {

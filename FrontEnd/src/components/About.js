@@ -59,7 +59,7 @@ function About() {
         </div>
       </div>
       
-      <div className="about-footer">
+      {/* <div className="about-footer">
         <h2>Get Started Today</h2>
         <p>
           Create an account and start managing your image collection the smart way. 
@@ -69,7 +69,7 @@ function About() {
           <a href="/signup" className="btn btn-primary">Sign Up Now</a>
           <a href="/login" className="btn btn-outline-primary">Log In</a>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -3,8 +3,12 @@ npm i express
 npm install cors
 npm i mongoose               
 npm i -D nodemon   
-nodemon .\index.js     
+nodemon ../Backend/index.js     
 npm install -g nodemon    
 npm install --save express-validator
 npm i bcryptjs
 npm i jsonwebtoken
+
+cd .\FrontEnd\  --then--  npm run start                for Frontend 
+cd .\BackEnd\ --then--  nodemon ../Backend/index.js    for Backend
+cd .\FrontEnd\  --then--  npm run both                 for both

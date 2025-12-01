@@ -124,7 +124,7 @@ function Navbar(props) {
             </li>
           </ul>
           
-          <div className="theme-toggle-wrapper me-3">
+          {/* <div className="theme-toggle-wrapper me-3">
             <button 
               className="theme-toggle-btn" 
               onClick={toggleTheme} 
@@ -136,7 +136,7 @@ function Navbar(props) {
                 <i className="fas fa-sun"></i>
               )}
             </button>
-          </div>
+          </div> */}
           
           {!localStorage.getItem("authtoken") ? (
             <div className="d-flex auth-buttons">
